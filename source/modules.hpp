@@ -30,11 +30,13 @@
 #include "evaluate/callable/EvalTaskEqu.hpp"
 #include "evaluate/static/EvalPacking.hpp"
 #include "evaluate/static/EvalRandom.hpp"
+#include "evaluate/static/EvalIntVal.hpp"
 
 // Placement Modules
 #include "placement/AnnotatePlacement_Position.hpp"
 #include "placement/RandomReplacement.hpp"
 #include "placement/MaxSizePlacement.hpp"
+#include "placement/FreeListPlacement.hpp"
 
 // Selection Modules
 #include "select/SelectElite.hpp"
@@ -43,6 +45,7 @@
 #include "select/SchedulerProbabilistic.hpp"
 #include "select/SelectRoulette.hpp"
 #include "select/SelectTournament.hpp"
+#include "select/SelectPoints.hpp"
 
 // Organism Types
 #include "orgs/BitsOrg.hpp"
@@ -57,3 +60,6 @@
 #include "orgs/instructions/VirtualCPU_Inst_Label.hpp"
 #include "orgs/instructions/VirtualCPU_Inst_Manipulation.hpp"
 #include "orgs/instructions/VirtualCPU_Inst_Replication.hpp"
+#include "orgs/HostOrg.hpp"
+#include "orgs/SymbiontOrg.hpp"
+#include "orgs/InheritedValue.hpp"

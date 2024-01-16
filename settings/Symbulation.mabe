@@ -1,0 +1,50 @@
+random_seed = 0;                // Seed for random number generator; use 0 to base on time.
+Var pop_size = 1000;            // Number of organisms to evaluate in the population.
+Var max_ud = 2500;
+
+Population hosts;
+Population symbionts;
+
+MaxSizePlacement h_placement {
+    target = "hosts";
+    max_pop_size = pop_size;
+};
+FreeListPlacement s_placement {
+    target = "symbionts";
+};
+
+HostOrg host_org {
+    sym_pop = "symbionts";
+};
+SymbiontOrg sym_org;
+
+EvalIntVal eval;
+SelectPoints select {
+    points_threshold = 1000;
+};
+InheritedValue _genome {
+    value_trait = "int_val";
+};
+
+@START() {
+  PRINT("random_seed = ", random_seed, "\n");  // Print seed at run start.
+  symbionts.INJECT("sym_org", pop_size);
+  hosts.INJECT("host_org", pop_size);            // Inject ancestor organisms
+};
+
+@UPDATE(Var ud) {
+  IF (ud == max_ud) EXIT();
+
+  IF (GET_UPDATE() % 100 == 0 || GET_UPDATE() == 1) {
+    PRINT("UD:", GET_UPDATE(),
+        "  HostPopSize=", hosts.SIZE(),
+        "  SymPopSize=", symbionts.SIZE(),
+        "  AveIntVal=", hosts.CALC_MEAN("int_val"),
+        "  MinIntVal=", hosts.CALC_MIN("int_val"),
+        "  MaxIntVal=", hosts.CALC_MAX("int_val")
+       );
+  }
+
+  eval.EVAL(hosts);
+  select.SELECT(hosts, hosts);
+}
