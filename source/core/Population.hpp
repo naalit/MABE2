@@ -237,6 +237,15 @@ namespace mabe {
                              "DEBUG: Give memory location of target.");
     }
 
+    std::optional<OrgPosition> PositionOf(Organism &org) {
+      for (auto it = begin(); it != end(); it++) {
+        if (&*it == &org) {
+          return it.AsPosition();
+        }
+      }
+      return {};
+    }
+
 
     // ------ DEBUG FUNCTIONS ------
     bool OK() const {
