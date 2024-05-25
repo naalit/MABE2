@@ -22,17 +22,27 @@ const int POTATOES = 3;
 
 class SymbiontOrg : public OrganismTemplate<SymbiontOrg> {
 protected:
-  bool has_host = false;
+  std::optional<Organism*> host = {};
+  bool doing_vert_trans = false;
+  bool from_vert_trans = false;
 
 public:
   SymbiontOrg(OrganismManager<SymbiontOrg> &_manager)
       : OrganismTemplate<SymbiontOrg>(_manager) {}
-  SymbiontOrg(const SymbiontOrg &) = default;
-  SymbiontOrg(SymbiontOrg &&) = default;
+  SymbiontOrg(const SymbiontOrg &x) : OrganismTemplate<SymbiontOrg>(x), from_vert_trans(x.doing_vert_trans) {}
+  SymbiontOrg(SymbiontOrg &&x) : OrganismTemplate<SymbiontOrg>(x), from_vert_trans(x.doing_vert_trans) {}
   ~SymbiontOrg() { ; }
 
   struct ManagerData : public Organism::ManagerData {
   };
+
+  void SetVerticalTransmission(bool b) {
+    doing_vert_trans = b;
+  }
+
+  bool IsFromVerticalTransmission() {
+    return from_vert_trans;
+  }
 
   std::string ToString() const override {
     return "Symbiont";
@@ -42,10 +52,17 @@ public:
     return 0;
   }
 
-  bool TrySetHost() {
-    bool r = !has_host;
-    has_host = true;
-    return r;
+  std::optional<Organism*> GetHost() const {
+    return host;
+  }
+
+  bool TrySetHost(Organism* new_host) {
+    if (host.has_value()) {
+      return false;
+    } else {
+      host = new_host;
+      return true;
+    }
   }
 };
 

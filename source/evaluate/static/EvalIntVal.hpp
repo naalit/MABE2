@@ -23,6 +23,7 @@ private:
                                       "Trait for interaction value."};
   SharedTrait<double> points_trait{this, "points", "Trait to use to give an organism resources."};
   double synergy = 5.0;
+  double points_per_update = 100.0;
 
 public:
   EvalIntVal(mabe::MABE &control, const std::string &name = "EvalIntVal",
@@ -47,6 +48,8 @@ public:
   void SetupConfig() override {
     LinkVar(synergy, "synergy",
             "Amount symbiont's returned resources should be multiplied by.");
+    LinkVar(points_per_update, "points_per_update",
+            "Amount of points to distribute to each host each update.");
   }
 
   void AddPoints(Organism &org, double points) {
@@ -61,7 +64,7 @@ public:
     for (Organism &host : alive_collect) {
 
       // Receive resources from the world and distribute them to the symbionts
-      double resources = 100.0;
+      double resources = points_per_update;
       double host_int_val = int_val_trait.Get(host);
       HostOrg *host_org = dynamic_cast<HostOrg *>(&host);
       if (host_org && !host_org->GetSymbionts().empty()) {

@@ -63,3 +63,4 @@
 #include "orgs/HostOrg.hpp"
 #include "orgs/SymbiontOrg.hpp"
 #include "orgs/InheritedValue.hpp"
+#include "orgs/SymManager.hpp"

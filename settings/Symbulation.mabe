@@ -1,6 +1,7 @@
+// These are the default settings in Symbulation's default mode (we do reproduce these results correctly!)
 random_seed = 0;                // Seed for random number generator; use 0 to base on time.
-Var pop_size = 1000;            // Number of organisms to evaluate in the population.
-Var max_ud = 2500;
+Var pop_size = 10000;            // Number of organisms to evaluate in the population.
+Var max_ud = 1000;
 
 Population hosts;
 Population symbionts;
@@ -18,9 +19,19 @@ HostOrg host_org {
 };
 SymbiontOrg sym_org;
 
-EvalIntVal eval;
-SelectPoints select {
+EvalIntVal eval {
+    synergy = 5.0;
+    points_per_update = 100.0;
+};
+SelectPoints select_host {
     points_threshold = 1000;
+};
+SelectPoints select_sym {
+    points_threshold = 100;
+};
+SymManager sym_manager {
+    sym_vert_trans_prob = 0.7;
+    sym_vert_trans_points = 0.0;
 };
 InheritedValue _genome {
     value_trait = "int_val";
@@ -41,10 +52,14 @@ InheritedValue _genome {
         "  SymPopSize=", symbionts.SIZE(),
         "  AveIntVal=", hosts.CALC_MEAN("int_val"),
         "  MinIntVal=", hosts.CALC_MIN("int_val"),
-        "  MaxIntVal=", hosts.CALC_MAX("int_val")
+        "  MaxIntVal=", hosts.CALC_MAX("int_val"),
+        "  SAveIntVal=", symbionts.CALC_MEAN("int_val"),
+        "  SMinIntVal=", symbionts.CALC_MIN("int_val"),
+        "  SMaxIntVal=", symbionts.CALC_MAX("int_val")
        );
   }
 
   eval.EVAL(hosts);
-  select.SELECT(hosts, hosts);
+  select_host.SELECT(hosts, hosts);
+  select_sym.SELECT(symbionts, symbionts);
 }

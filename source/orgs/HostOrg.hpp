@@ -40,6 +40,7 @@ public:
 
   struct ManagerData : public Organism::ManagerData {
     std::string sym_pop;
+    int symbiont_capacity = 1;
   };
 
   std::string ToString() const override {
@@ -48,9 +49,16 @@ public:
 
   size_t Mutate(emp::Random &) override { return 0; }
 
-  void AddSymbiont(OrgPosition sym) { symbionts.push_back(sym); }
+  bool AddSymbiont(OrgPosition sym) {
+    if (symbionts.size() < SharedData().symbiont_capacity) {
+      symbionts.push_back(sym);
+      return true;
+    } else {
+      return false;
+    }
+  }
 
-  emp::vector<OrgPosition> &GetSymbionts() { return symbionts; }
+  emp::vector<OrgPosition> const &GetSymbionts() const { return symbionts; }
 
   void Initialize(emp::Random &random) override {
     Randomize(random);
@@ -60,7 +68,7 @@ public:
     for (auto it = sym_col.begin(); it != sym_col.end(); it++) {
       if (!it->IsEmpty()) {
         if (auto sym = dynamic_cast<SymbiontOrg *>(&*it)) {
-          if (sym->TrySetHost()) {
+          if (sym->TrySetHost(this)) {
             symbionts.push_back(it.AsPosition());
             break;
           }
@@ -73,6 +81,8 @@ public:
   void SetupConfig() override {
     GetManager().LinkVar(SharedData().sym_pop, "sym_pop",
                          "The Collection that this hosts' symbionts live in.");
+    GetManager().LinkVar(SharedData().symbiont_capacity, "symbiont_capacity",
+                         "The maximum number of symbionts a host can have.");
   }
 };
 
